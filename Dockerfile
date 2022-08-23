@@ -19,4 +19,4 @@ RUN npm install
 CMD ["cd", /srv"]
 CMD ["pm2-runtime", "index.js"]
 
-EXPOSE 1234
+EXPOSE $PORT

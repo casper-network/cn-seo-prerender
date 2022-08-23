@@ -11,6 +11,6 @@ const server = prerender({
         '--disable-dev-shm-usage',
     ],
     waitAfterLastRequest: 500,
-    port: 1234,
+    port: process.env.PORT,
 });
 server.start();

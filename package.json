@@ -1,6 +1,6 @@
 {
-  "name": "casper-prerender",
-  "version": "1.0.0",
+  "name": "caspernetwork-prerender",
+  "version": "0.1.0",
   "description": "Prerender Service for Casper Website",
   "main": "index.js",
   "scripts": {
