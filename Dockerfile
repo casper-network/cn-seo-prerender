@@ -16,7 +16,7 @@ WORKDIR /srv
 RUN npm install pm2 -g
 RUN npm install
 
-CMD ["cd", /srv"]
+CMD ["cd", "/srv"]
 CMD ["pm2-runtime", "index.js"]
 
 EXPOSE $PORT
