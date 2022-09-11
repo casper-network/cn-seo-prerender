@@ -1,0 +1,14 @@
+{
+  "name": "caspernetwork-prerender",
+  "version": "0.1.0",
+  "description": "Prerender Service for Casper Website",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Sandro Ducceschi",
+  "license": "ISC",
+  "dependencies": {
+    "prerender": "^5.20.0"
+  }
+}
