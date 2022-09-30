@@ -15,3 +15,4 @@ To run the project, the following environment variables are required:
 ```
 PORT=1234
 ```
+
