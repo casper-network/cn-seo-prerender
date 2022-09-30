@@ -2,7 +2,7 @@
 replicaCount: 3
 
 #Pod
-resourceCpuRequest: 500m
+resourceCpuRequest: 100m
 resourceCpuLimit: 1
 
 resourceMemoryRequest: 300Mi
