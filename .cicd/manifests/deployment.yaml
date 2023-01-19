@@ -31,6 +31,9 @@ spec:
         envFrom:
         - configMapRef:
             name: {{.Values.appName}}-{{.Values.envName}}-config
+        securityContext:
+          capabilities:
+            add: ["NET_ADMIN"]
 
 
   
