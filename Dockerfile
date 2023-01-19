@@ -16,7 +16,7 @@ WORKDIR /srv
 RUN npm install pm2 -g
 RUN npm install
 
-CMD ["cd", "/srv"]
-CMD ["pm2-runtime", "index.js"]
+#block access to AWS metadata IP before starting server
+CMD ip route add blackhole 169.254.169.254; pm2-runtime index.js
 
 EXPOSE $PORT
