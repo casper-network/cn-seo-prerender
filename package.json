@@ -9,6 +9,6 @@
   "author": "Sandro Ducceschi",
   "license": "ISC",
   "dependencies": {
-    "prerender": "^5.20.0"
+    "prerender": "5.20.1"
   }
 }
