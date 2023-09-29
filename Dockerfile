@@ -1,9 +1,10 @@
-FROM node:17
+FROM node:18
 
 WORKDIR /srv
 
 COPY ./package.json .
 COPY ./index.js .
+COPY ./puppeteer.config.cjs .
 COPY entrypoint.sh .
 
 RUN apt-get update && apt-get install -y net-tools iproute2 ca-certificates wget gnupg --no-install-recommends &&\
