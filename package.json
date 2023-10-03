@@ -1,14 +1,15 @@
 {
   "name": "caspernetwork-prerender",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Prerender Service for Casper Website",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js"
   },
   "author": "Sandro Ducceschi",
   "license": "ISC",
   "dependencies": {
-    "prerender": "5.20.1"
+    "puppeteer": "^21.3.6"
   }
 }
