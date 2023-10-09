@@ -11,7 +11,7 @@ import puppeteer from 'puppeteer';
 const ACCEPTED_EXTENSIONS = ['html', 'htm'];
 const SERVER_HOST = process.env.HOST || null;
 const SERVER_PORT = process.env.PORT || 3000;
-const LOG_LEVEL = process.env.LOG || 'verbose';
+const LOG_LEVEL = process.env.LOG || 'error';
 
 const LOGGER = {
   time: () => new Date().toISOString(),
@@ -108,7 +108,13 @@ class RenderService {
     try {
       browser = await puppeteer.launch({
         headless: 'new',
-        args: ["--no-sandbox", "--disable-dev-shm-usage", "--disable-setuid-sandbox"], // Optional, was trying these
+        args: [
+          '--no-sandbox',
+          '--disable-gpu',
+          '--disable-dev-shm-usage',
+          '--blink-settings=imagesEnabled=false'
+          '--disable-setuid-sandbox'
+        ],
         ignoreDefaultArgs: ["--disable-extensions"], // Optional
         executablePath: "/usr/bin/google-chrome",
       });
