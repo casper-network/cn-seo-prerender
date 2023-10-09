@@ -8,9 +8,25 @@ import puppeteer from 'puppeteer';
 //----------------------------------
 //  Variables
 //----------------------------------
-const ACCEPTED_EXTENSIONS = ['html', 'htm', 'php'];
+const ACCEPTED_EXTENSIONS = ['html', 'htm'];
 const SERVER_HOST = process.env.HOST || null;
 const SERVER_PORT = process.env.PORT || 3000;
+const LOG_LEVEL = process.env.LOG || 'verbose';
+
+const LOGGER = {
+  time: () => new Date().toISOString(),
+  error: (msg) => {
+    console.log(`${LOGGER.time()} - ERROR - ${msg}`);
+  },
+  info: (msg) => {
+    console.log(`${LOGGER.time()} - INFO  - ${msg}`);
+  },
+  log: (msg) => {
+    if (LOG_LEVEL === 'verbose') {
+      console.log(`${LOGGER.time()} - LOG   - ${msg}`);
+    }
+  },
+};
 
 //---------------------------------------------------
 //
@@ -46,14 +62,14 @@ class RenderService {
     const server = http.createServer();
     server.on('request', this.handleServerRequest.bind(this));
     server.listen(SERVER_PORT, SERVER_HOST, () => {
-      this.log(`Server is running on port: ${SERVER_PORT}`);
+      LOGGER.info(`Service is running on port: ${SERVER_PORT}`);
     });
     return server;
   }
 
   handleServerRequest(request, response) {
     const { url, origin } = this.parseRequestUrls(request);
-    if (this.ignoreRequest(url)) {
+    if (this.ignoreRequest(url) || url === '') {
       this.redirect(url, origin, response);
     } else {
       this.retrieveSite(url, response);
@@ -63,10 +79,10 @@ class RenderService {
   redirect(url, origin, response) {
     if (origin) {
       const newLocation = `${origin}/${url}`;
-      this.log(`Redirecting to: ${newLocation}`);
+      LOGGER.log(`Redirecting to: ${newLocation}`);
       this.sendHttpStatus(301, { 'Location': newLocation }, response);
     } else {
-      this.log(`Ignoring request for: ${url}`);
+      LOGGER.log(`Ignoring request for: "${url}"`);
       this.sendHttpStatus(400, null, response);
     }
   }
@@ -88,7 +104,7 @@ class RenderService {
   //---------------------------------------------------
   async createBrowser() {
     let browser = null;
-    this.log('Launching Chrome...');
+    LOGGER.info('Launching Chrome...');
     try {
       browser = await puppeteer.launch({
         headless: 'new',
@@ -98,17 +114,18 @@ class RenderService {
       });
 
       const version = await browser.version();
-      this.log(`${version} started..`);
+      LOGGER.info(`${version} started..`);
     } catch (err) {
-      this.log(err.message);
+      LOGGER.error(err.message);
     }
     return browser;
   }
 
   async retrieveSite(url, response) {
+    let page = null;
     try {
       const browser = this.browser;
-      const page = await browser.newPage();
+      page = await browser.newPage();
       
       await page.setCacheEnabled(false);
       await page.setJavaScriptEnabled(true);
@@ -118,10 +135,14 @@ class RenderService {
       
       await page.close();
       
-      this.log(`Sending HTML for: ${url}`);
+      LOGGER.log(`Sending HTML for: ${url}`);
       this.sendHtmlResponse(html, response);
     } catch (err) {
-      this.log(`Couldn't retrieve "${url}": ${err.message}`);
+      LOGGER.error(`Couldn't retrieve "${url}": ${err.message}`);
+      if (page) {
+        await page.close();
+        page = null;
+      }
       this.sendHttpStatus(500, null, response);
     }
   }
@@ -129,10 +150,6 @@ class RenderService {
   //----------------------------------
   //  Helpers
   //----------------------------------
-  log(message) {
-    const time = new Date().toISOString();
-    console.log(`${time} - ${message}`);
-  }
   parseRequestUrls(request) {
     const url = (request.url || '').replace(/^\//,'');
     const referer = request.headers.referer;
@@ -144,7 +161,7 @@ class RenderService {
         }
       }
     } catch (err) {
-      this.log(`Unable to retrieve origin from referer "${referer}": ${err.message}`);
+      LOGGER.error(`Unable to retrieve origin from referer "${referer}": ${err.message}`);
     }
     return { url };
   }
