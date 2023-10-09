@@ -112,7 +112,7 @@ class RenderService {
           '--no-sandbox',
           '--disable-gpu',
           '--disable-dev-shm-usage',
-          '--blink-settings=imagesEnabled=false'
+          '--blink-settings=imagesEnabled=false',
           '--disable-setuid-sandbox'
         ],
         ignoreDefaultArgs: ["--disable-extensions"], // Optional
