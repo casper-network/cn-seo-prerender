@@ -109,11 +109,10 @@ class RenderService {
       browser = await puppeteer.launch({
         headless: 'new',
         args: [
-          '--no-sandbox',
-          '--disable-gpu',
-          '--disable-dev-shm-usage',
           '--blink-settings=imagesEnabled=false',
-          '--disable-setuid-sandbox'
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--no-sandbox',
         ],
         ignoreDefaultArgs: ["--disable-extensions"], // Optional
         executablePath: "/usr/bin/google-chrome",
