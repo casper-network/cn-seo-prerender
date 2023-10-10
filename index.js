@@ -41,16 +41,22 @@ class RenderService {
   //
   //---------------------------------------------------
   constructor() {
-    this.server = null;
-    this.browser = null;
-    this.createBrowser().then((browser) => {
-      if (browser) {
-        this.browser = browser;
-        this.server = this.createServer();
-      } else {
-        process.exit(1);
-      }
-    });
+    try {
+      this.server = null;
+      this.browser = null;
+      this.createBrowser().then((browser) => {
+        if (browser) {
+          this.browser = browser;
+          this.server = this.createServer();
+        } else {
+          LOGGER.info('Exiting as Browser could not be started..');
+          process.exit(1);
+        }
+      });
+    } catch (err) {
+      LOGGER.error(`Unable to create Browser/Service: ${err.message}`);
+      process.exit(1);
+    }
   }
 
   //---------------------------------------------------
@@ -69,10 +75,19 @@ class RenderService {
 
   handleServerRequest(request, response) {
     const { url, origin } = this.parseRequestUrls(request);
-    if (this.ignoreRequest(url) || url === '') {
-      this.redirect(url, origin, response);
-    } else {
-      this.retrieveSite(url, response);
+    let testUrl = origin ? `${origin}/${url}` : url;
+    try {
+      testUrl = new URL(testUrl);
+      if (testUrl) {
+        if (this.ignoreRequest(url)) {
+          this.redirect(url, origin, response);
+        } else {
+          this.retrieveSite(url, response);
+        }
+      }
+    } catch (err) {
+      LOGGER.log(`Ignoring request for: "${url}" - ${err.message}`);
+      this.sendHttpStatus(400, null, response);
     }
   }
 
@@ -180,5 +195,8 @@ class RenderService {
     return false;
   }
 }
-
-await new RenderService();
+try {
+  new RenderService();
+} catch (err) {
+  LOGGER.error(err.message);
+}
