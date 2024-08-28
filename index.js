@@ -103,8 +103,10 @@ class RenderService {
   }
 
   sendHtmlResponse(html, response) {
+    // replace origin.casper.network references
+    const output = (html || '').replace(/origin\.casper\.network/gm, 'casper.network');
     response.writeHead(200, { 'Content-Type': 'text/html; charset=UTF-8' });
-    response.end(html);
+    response.end(output);
   }
 
   sendHttpStatus(status, headers, response) {
