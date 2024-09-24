@@ -10,6 +10,6 @@
   "author": "Sandro Ducceschi",
   "license": "ISC",
   "dependencies": {
-    "puppeteer": "^21.3.6"
+    "puppeteer": "^23.2.1"
   }
 }
